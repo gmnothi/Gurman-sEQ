@@ -220,12 +220,12 @@ void updateCutFilter(ChainType& leftLowCut,
     }
 }
 
-inline auto makeLowCutFliter(const ChainSettings& chainSettings, double sampleRate)
+inline auto makeLowCutFilter(const ChainSettings& chainSettings, double sampleRate)
 {
     return juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(chainSettings.lowCutFreq, sampleRate, (chainSettings.lowCutSlope+1)*2);
 }
 
-inline auto makeHighCutFliter(const ChainSettings& chainSettings, double sampleRate)
+inline auto makeHighCutFilter(const ChainSettings& chainSettings, double sampleRate)
 {
     return juce::dsp::FilterDesign<float>::designIIRLowpassHighOrderButterworthMethod(chainSettings.highCutFreq, sampleRate, (chainSettings.highCutSlope+1)*2);
 }
@@ -285,7 +285,7 @@ private:
     
     
     
-    void updatePeakFliter(const ChainSettings& chainSettings);
+    void updatePeakFilter(const ChainSettings& chainSettings);
     
     
     
