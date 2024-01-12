@@ -268,6 +268,31 @@ private:
 };
 
 //==============================================================================
+struct PowerButton : juce::ToggleButton { };
+
+struct AnalyzerButton : juce::ToggleButton
+{
+    void resized() override
+    {
+        auto bounds = getLocalBounds();
+        auto insetRect = bounds.reduced(4);
+        
+        randomPath.clear();
+        
+        juce::Random r;
+        
+        randomPath.startNewSubPath(insetRect.getX(),
+                                   insetRect.getY() + insetRect.getHeight() * r.nextFloat());
+        
+        for( auto x = insetRect.getX() + 1; x < insetRect.getRight(); x += 2 )
+        {
+            randomPath.lineTo(x,
+                              insetRect.getY() + insetRect.getHeight() * r.nextFloat());
+        }
+    }
+    
+    juce::Path randomPath;
+};
 /**
 */
 class SimpleEQAudioProcessorEditor  : public juce::AudioProcessorEditor
@@ -279,35 +304,47 @@ public:
     //==============================================================================
     void paint (juce::Graphics&) override;
     void resized() override;
-    
+
 private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     SimpleEQAudioProcessor& audioProcessor;
+
     
-    RotarySliderWithLabels peakFreqSlider, peakGainSlider, peakQualitySlider, lowCutFreqSlider, highCutFreqSlider, lowCutSlopeSlider, highCutSlopeSlider;
+    RotarySliderWithLabels peakFreqSlider,
+    peakGainSlider,
+    peakQualitySlider,
+    lowCutFreqSlider,
+    highCutFreqSlider,
+    lowCutSlopeSlider,
+    highCutSlopeSlider;
     
     ResponseCurveComponent responseCurveComponent;
     
     using APVTS = juce::AudioProcessorValueTreeState;
     using Attachment = APVTS::SliderAttachment;
     
-    Attachment peakFreqSliderAttachment, peakGainSliderAttachment, peakQualitySliderAttachment, lowCutFreqSliderAttachment, highCutFreqSliderAttachment, lowCutSlopeSliderAttachment, highCutSlopeSliderAttachment;
-    
-    juce::ToggleButton lowcutBypassButton, peakBypassButton, highcutBypassButton, analyzerEnabledButton;
-    
-    using ButtonAttachment = APVTS::ButtonAttachment;
-        
-        ButtonAttachment lowcutBypassButtonAttachment,
-                            peakBypassButtonAttachment,
-                            highcutBypassButtonAttachment,
-                            analyzerEnabledButtonAttachment;
-    
+    Attachment peakFreqSliderAttachment,
+                peakGainSliderAttachment,
+                peakQualitySliderAttachment,
+                lowCutFreqSliderAttachment,
+                highCutFreqSliderAttachment,
+                lowCutSlopeSliderAttachment,
+                highCutSlopeSliderAttachment;
+
     std::vector<juce::Component*> getComps();
     
+    PowerButton lowcutBypassButton, peakBypassButton, highcutBypassButton;
+    AnalyzerButton analyzerEnabledButton;
+    
+    using ButtonAttachment = APVTS::ButtonAttachment;
+    
+    ButtonAttachment lowcutBypassButtonAttachment,
+                        peakBypassButtonAttachment,
+                        highcutBypassButtonAttachment,
+                        analyzerEnabledButtonAttachment;
+    
     LookAndFeel lnf;
-    
-    
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleEQAudioProcessorEditor)
 };
